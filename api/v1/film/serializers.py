@@ -1,22 +1,25 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 import datetime
-from film.models import Position, Filmmakers, Movies, Comment
+from .models import Position, Filmmakers, Movies, Comment
+from netflix.serializers import  DynamicFieldsModelSerializer
 
-class PositionSerializers(serializers.ModelSerializer):
+
+class PositionSerializers(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Position
         fields = [
             'position',
-            ]
+        ]
 
 
-class FilmmakersSerializer(serializers.ModelSerializer):
+class FilmmakersSerializer(DynamicFieldsModelSerializer):
     positions = PositionSerializers(
-        read_only=True,
-        fields=["positions"],
+        read_only=True, 
+        fields = ["position"],
     )
+
     class Meta:
         model = Filmmakers
         fields = [
@@ -24,25 +27,24 @@ class FilmmakersSerializer(serializers.ModelSerializer):
             'age',
             'gender',
             'positions',
-            ]
+        ]
 
 
-class MoviesSerializer(serializers.ModelSerializer):
+class MoviesSerializer(DynamicFieldsModelSerializer):
     filmmakers = FilmmakersSerializer(many=True)
 
     class Meta:
         model = Movies
         fields = [
-            'id',
-            'name',
-            'year',
+            'title',
+            'production_year',
             'imdb',
             'genre',
             'filmmakers',
         ]
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(DynamicFieldsModelSerializer):
     # user_id = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -52,4 +54,4 @@ class CommentSerializer(serializers.ModelSerializer):
             'user_id', 
             'text', 
             'created_date',
-            ]
+        ]
