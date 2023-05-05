@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_filters',
 
     "api.v1.film.apps.FilmConfig",
+    "user",
 ]
 
 MIDDLEWARE = [
